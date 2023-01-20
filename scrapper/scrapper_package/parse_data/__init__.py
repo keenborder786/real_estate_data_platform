@@ -1,0 +1,1 @@
+from scrapper_package.parse_data.parse import Parse

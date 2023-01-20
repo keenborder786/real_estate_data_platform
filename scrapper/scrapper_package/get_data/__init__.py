@@ -1,0 +1,1 @@
+from scrapper_package.get_data.get import Get
