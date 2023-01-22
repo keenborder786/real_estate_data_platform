@@ -22,48 +22,31 @@
 ## How to run the pipeline?
 
 ### Build the images:
-    - Scrapper:
-
+- Scrapper:
 ```console
-    
 docker build -t scrapper:1.0 -f scrapper/Dockerfile_scrapper .
-
 ```
-    - Spark Base:
-
+- Spark Base:
 ```console
-    
 docker build -t sparkbase:1.0 -f scrapper/Dockerfile_base .
-
 ```
-    - Spark Client:
-
+- Spark Client:
 ```console
-    
 docker build -t sparkclient:1.0 -f scrapper/Dockerfile_client .
-
 ```
-    - Spark Master:
-
+- Spark Master:
 ```console
-    
 docker build -t sparkmaster:1.0 -f scrapper/Dockerfile_master .
-
 ```
-    - Spark Worker:
-
+- Spark Worker:
 ```console
-    
 docker build -t sparkworker:1.0 -f scrapper/Dockerfile_worker .
-
 ```
 
 ### Starts the s3 bucket,scrapper, spark cluster and trino-coordinator:
     
 ```console
-
 docker-compose up
-
 ```
 ***Scrapper will start scrapping and uploading the json files to minio bucket on the revelant folder. Therefore please wait before running the spark job as their needs to be some raw data on minio raw bucket for spark to process on otherwise it will just create a empty delta table***
 
