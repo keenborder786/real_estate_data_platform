@@ -1,0 +1,31 @@
+
+FROM docker.io/condaforge/mambaforge@sha256:a119fe148b8a276397cb7423797f8ee82670e64b071dc39c918b6c3513bd0174
+
+RUN bin/bash
+
+## Creating the new conda environment with the desired packages using mamba
+WORKDIR /opt
+COPY environment.yml .
+RUN mamba env create -f environment.yml
+RUN echo "conda activate real_estate" >> ~/.bashrc
+
+
+# Install base utilities
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y build-essential  && \
+    apt-get install -yq curl wget jq vim && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+## Install java and spark
+RUN apt-get update && \
+    apt-get install -y default-jdk && \
+    wget https://downloads.apache.org/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz && \
+    tar -xzf spark-3.3.1-bin-hadoop3.tgz && \
+    mv spark-3.3.1-bin-hadoop3 /opt/spark
+
+ENV SPARK_HOME=/opt/spark
+ENV PATH=$PATH:$SPARK_HOME/bin
+ENV SPARK_NO_DAEMONIZE=true
+

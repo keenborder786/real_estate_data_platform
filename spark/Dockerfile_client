@@ -1,0 +1,30 @@
+FROM sparkbase:1.0
+
+ENV MASTER_HOST_NAME=''
+ENV DRIVER_HOST = ''
+ENV DRIVER_IP=''
+ENV DRIVER_PORT=''
+ENV DRIVER_BLOCK_MANAGER_PORT=''
+ENV EXECUTOR_NUMBERS=''
+ENV EXECUTOR_CORES=''
+ENV EXECUTOR_MEMORY=''
+
+## COPYING FILES
+COPY spark/config.py /opt/spark
+COPY spark/connect.py /opt/spark
+COPY spark/job.py /opt/spark
+COPY spark/main.py /opt/spark
+COPY spark/util.py /opt/spark
+
+## Execute the final shell script to run our job
+CMD $SPARK_HOME/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,io.delta:delta-core_2.12:2.2.0,com.amazonaws:aws-java-sdk:1.12.364,com.amazonaws:aws-java-sdk-bundle:1.12.364,org.apache.hadoop:hadoop-aws:3.3.4,org.apache.hadoop:hadoop-common:3.3.4 \
+    --conf spark.master=$MASTER_HOST_NAME \
+    --conf spark.driver.host=$DRIVER_HOST \
+    --conf spark.driver.bindAddress=$DRIVER_IP \
+    --conf spark.driver.port=$DRIVER_PORT \
+    --conf spark.executor.cores=$EXECUTOR_CORES \
+    --conf spark.executor.memory=$EXECUTOR_MEMORY \
+    --conf spark.executor.instances=$EXECUTOR_NUMBERS \
+    --conf spark.driver.blockManager.port=$DRIVER_BLOCK_MANAGER_PORT \
+    --conf spark.pyspark.python=/opt/conda/envs/real_estate/bin/python \
+    /opt/spark/main.py
