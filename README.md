@@ -1,9 +1,9 @@
 # real_estate_data_platform
 
-## Pipeline Diagram:
+## Data Lakehouse Diagram:
 
 
-## Main Modules (for detailed explanation please open the revelant moduels):
+## Main Modules (for detailed explanation please open the relevant modules):
 
 ### Scrapper ![Click Here](https://github.com/keenborder786/real_estate_data_platform/blob/main/scrapper):
 
@@ -15,30 +15,36 @@
 - Spark consist of modules which runs a batch job to process our raw data for a specific city for a given and update the revelant delta table.
 - Spark also consist of docker files for master and worker container deployment which will act as spark standalone cluster where our batch job will be running 
 
-### Trinio
+### Trinio![Click Here](https://github.com/keenborder786/real_estate_data_platform/blob/main/trnio)
 
 - The main query engine which you can use to query the data from your delta tables.
 
 ## How to run the pipeline?
 
 ### Build the images:
+
 - Scrapper:
+
 ```console
 docker build -t scrapper:1.0 -f scrapper/Dockerfile_scrapper .
 ```
 - Spark Base:
+
 ```console
 docker build -t sparkbase:1.0 -f scrapper/Dockerfile_base .
 ```
 - Spark Client:
+
 ```console
 docker build -t sparkclient:1.0 -f scrapper/Dockerfile_client .
 ```
 - Spark Master:
+
 ```console
 docker build -t sparkmaster:1.0 -f scrapper/Dockerfile_master .
 ```
 - Spark Worker:
+
 ```console
 docker build -t sparkworker:1.0 -f scrapper/Dockerfile_worker .
 ```
