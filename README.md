@@ -24,40 +24,55 @@
 ### Build the images:
     - Scrapper:
 
-        ```console
-            docker build -t scrapper:1.0 -f scrapper/Dockerfile_scrapper .
-        ```
+    ```console
+        
+    docker build -t scrapper:1.0 -f scrapper/Dockerfile_scrapper .
+    
+    ```
     - Spark Base:
 
-        ```console
-            docker build -t sparkbase:1.0 -f scrapper/Dockerfile_base .
-        ```
+    ```console
+        
+    docker build -t sparkbase:1.0 -f scrapper/Dockerfile_base .
+    
+    ```
     - Spark Client:
 
-        ```console
-            docker build -t sparkclient:1.0 -f scrapper/Dockerfile_client .
-        ```
+    ```console
+        
+    docker build -t sparkclient:1.0 -f scrapper/Dockerfile_client .
+    
+    ```
     - Spark Master:
 
-        ```console
-            docker build -t sparkmaster:1.0 -f scrapper/Dockerfile_master .
-        ```
+    ```console
+        
+    docker build -t sparkmaster:1.0 -f scrapper/Dockerfile_master .
+    
+    ```
     - Spark Worker:
-        ```console
-            docker build -t sparkworker:1.0 -f scrapper/Dockerfile_worker .
-        ```
+
+    ```console
+        
+    docker build -t sparkworker:1.0 -f scrapper/Dockerfile_worker .
+
+    ```
 
 ### Starts the s3 bucket,scrapper, spark cluster and trino-coordinator:
     
     ```console
+    
     docker-compose up
+    
     ```
 ***Scrapper will start scrapping and uploading the json files to minio bucket on the revelant folder. Therefore please wait before running the spark job as their needs to be some raw data on minio raw bucket for spark to process on otherwise it will just create a empty delta table***
 
 ### Start the spark job by launching the spark client(driver):
 
-    ```console
-    docker run --net real_estate_data_platform_datapipeline --ip 172.18.0.8 --env-file spark/.env.client -p 40207:40207 -p 40208:40208 -p 4040:4040 -v spark_packages:/root/.ivy2/jars -v spark_cache:/root/.ivy2/cache --name sparkclient sparkclient:1.0
-    ```
+```console
+
+docker run --net real_estate_data_platform_datapipeline --ip 172.18.0.8 --env-file spark/.env.client -p 40207:40207 -p 40208:40208 -p 4040:4040 -v spark_packages:/root/.ivy2/jars -v spark_cache:/root/.ivy2/cache --name sparkclient sparkclient:1.0
+
+```
 ***This will intialize our spark job on the containerized spark cluster***
 ***Once the batch job has been executed, you can query the data from Trino***
