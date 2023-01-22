@@ -29,8 +29,11 @@ services:
     volumes:
       - minio_storage:/data
     environment:
-      MINIO_ACCESS_KEY: user
-      MINIO_SECRET_KEY: password
+      MINIO_ACCESS_KEY_FILE: /run/secrets/minio_user
+      MINIO_SECRET_KEY_FILE: /run/secrets/minio_password
+    secrets:
+      - minio_user
+      - minio_password
     command: server /data --console-address ":9090"
     networks:
       datapipeline:
@@ -104,7 +107,7 @@ services:
     ports:
       - '9083:9083' # Metastore Thrift
     volumes:
-      - ./trino/conf/metastore-site.xml:/opt/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml:ro
+      - ./trinio/conf/metastore-site.xml:/opt/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml:ro
     environment:
       METASTORE_DB_HOSTNAME: mariadb
     depends_on:
@@ -112,6 +115,12 @@ services:
     networks:
       datapipeline:
         ipv4_address: 172.18.1.10
+
+secrets:
+  minio_user:
+    file: ./secrets/minio_user.txt
+  minio_password:
+    file: ./secrets/minio_password.txt
 
 volumes:
   minio_storage: {}
