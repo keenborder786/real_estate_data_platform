@@ -1,7 +1,8 @@
 
-import requests
 from bs4 import BeautifulSoup as bs
 from typing import List,Dict,Tuple
+import requests
+
 
 class Parse:
     """

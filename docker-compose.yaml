@@ -6,18 +6,18 @@ services:
     image: scrapper:1.0
     container_name: scrapper
     environment:
-      - NUMBER_OF_REQUESTS=200
-      - SCRAPE_PAGES=1
+      - NUMBER_OF_REQUESTS=3000
+      - SCRAPE_PAGES=20
       - CITY=Lahore
       - TYPE=Houses_Property
-      - SLEEP_INTERVAL=10
-      - S3_ENDPOINT=172.18.0.5:9000
+      - SLEEP_INTERVAL=30
+      - S3_ENDPOINT=172.18.1.5:9000
       - S3_USER=user
       - S3_PASSWORD=password
     tty: true
     networks:
       datapipeline:
-        ipv4_address: 172.18.0.4
+        ipv4_address: 172.18.1.4
 
   minio:
     image: quay.io/minio/minio:RELEASE.2022-11-26T22-43-32Z.fips
@@ -37,7 +37,84 @@ services:
     command: server /data --console-address ":9090"
     networks:
       datapipeline:
-        ipv4_address: 172.18.0.5
+        ipv4_address: 172.18.1.5
+  sparkmaster:
+    image: sparkmaster:1.0
+    container_name: sparkmaster
+    hostname: sparkmaster
+    tty: true
+    ports:
+      - '8080:8080'
+      - '7077:7077'
+    volumes:
+      - spark_packages:/root/.ivy2/jars
+      - spark_cache:/root/.ivy2/cache
+    depends_on:
+      - minio
+    networks:
+      datapipeline:
+        ipv4_address: 172.18.1.6
+  sparkworker:
+    image: sparkworker:1.0
+    container_name: sparkworker
+    hostname: sparkworker
+    environment:
+      MASTER_HOST_NAME: spark://172.18.1.6:7077
+      WORKER_MEMORY: 1G
+      WORKER_CORES: "2"
+    tty: true
+    ports:
+      - '8081:8081'
+    volumes:
+      - spark_packages:/root/.ivy2/jars
+      - spark_cache:/root/.ivy2/cache
+    depends_on:
+      - sparkmaster
+    networks:
+      datapipeline:
+        ipv4_address: 172.18.1.7
+  trino-coordinator:
+    image: 'trinodb/trino:latest'
+    container_name: trino-coordinator
+    hostname: trino-coordinator
+    ports:
+      - '8083:8083'
+    volumes:
+      - ./trinio/etc:/etc/trino
+    networks:
+      datapipeline:
+        ipv4_address: 172.18.1.8
+
+  mariadb:
+    image: 'mariadb:latest'
+    container_name: mariadb
+    hostname: mariadb
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: metastore_db
+    networks:
+      datapipeline:
+        ipv4_address: 172.18.1.9
+
+  hive-metastore:
+    image: 'bitsondatadev/hive-metastore:latest'
+    container_name: hive-metastore
+    hostname: hive-metastore
+    ports:
+      - '9083:9083' # Metastore Thrift
+    volumes:
+      - ./trinio/conf/metastore-site.xml:/opt/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml:ro
+    environment:
+      METASTORE_DB_HOSTNAME: mariadb
+    depends_on:
+      - mariadb
+    networks:
+      datapipeline:
+        ipv4_address: 172.18.1.10
 
 secrets:
   minio_user:
@@ -47,7 +124,8 @@ secrets:
 
 volumes:
   minio_storage: {}
-
+  spark_cache: {}
+  spark_packages: {}
 networks:
   datapipeline:
     driver: bridge

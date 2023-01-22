@@ -1,1 +1,1 @@
-from scrapper_package.util.util import *
+from util import *
