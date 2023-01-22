@@ -29,8 +29,8 @@ services:
     volumes:
       - minio_storage:/data
     environment:
-      MINIO_ACCESS_KEY: user
-      MINIO_SECRET_KEY_FILE: password
+      MINIO_ROOT_USER: user
+      MINIO_ROOT_PASSWORD: password
     command: server /data --console-address ":9090"
     networks:
       datapipeline:
