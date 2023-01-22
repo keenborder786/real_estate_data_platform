@@ -1,1 +1,1 @@
-# Trnio:
+# Trino:
