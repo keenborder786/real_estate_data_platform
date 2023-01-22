@@ -15,7 +15,7 @@
 - Spark consist of modules which runs a batch job to process our raw data for a specific city for a given and update the revelant delta table.
 - Spark also consist of docker files for master and worker container deployment which will act as spark standalone cluster where our batch job will be running 
 
-### Trinio![Click Here](https://github.com/keenborder786/real_estate_data_platform/blob/main/trnio)
+### Trinio ![Click Here](https://github.com/keenborder786/real_estate_data_platform/blob/main/trnio)
 
 - The main query engine which you can use to query the data from your delta tables.
 

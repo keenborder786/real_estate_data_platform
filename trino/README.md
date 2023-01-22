@@ -1,1 +1,1 @@
-# Spark:
+# Trino:
