@@ -7,13 +7,14 @@ services:
     container_name: scrapper
     environment:
       - NUMBER_OF_REQUESTS=3000
-      - SCRAPE_PAGES=20
+      - SCRAPE_PAGES=1
       - CITY=Lahore
       - TYPE=Houses_Property
       - SLEEP_INTERVAL=30
       - S3_ENDPOINT=172.18.1.5:9000
       - S3_USER=user
       - S3_PASSWORD=password
+      - STARTING_PAGE=25
     tty: true
     networks:
       datapipeline:

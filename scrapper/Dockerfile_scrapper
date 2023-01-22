@@ -6,7 +6,7 @@ ENV SCRAPE_PAGES = ''
 ENV CITY = ''
 ENV TYPE = ''
 ENV SLEEP_INTERVAL =  ''
-
+ENV STARTING_PAGE = ''
 ## Creating the new conda environment with the desired packages using mamba
 WORKDIR /opt
 COPY environment.yml .

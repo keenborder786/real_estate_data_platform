@@ -1,1 +1,1 @@
-from util import *
+from scrapper_package.util.util import bucket_creation
